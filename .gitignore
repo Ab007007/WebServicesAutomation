@@ -3,4 +3,7 @@ Eclipse_WS/training/.settings
 Eclipse_WS/training/.project
 Eclipse_WS/training/.classpath
 Eclipse_WS/training/target
+Eclipse_WS/training/test-output
+~$Notes.docx
+~WRL3343.tmp
 Eclipse_WS/training/src/main/java/com/synechron/restassured/training/globals/GlobalVariables.java

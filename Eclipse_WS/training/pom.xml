@@ -51,5 +51,12 @@
 			<artifactId>spring-web-test-client</artifactId>
 			<version>5.4.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.14.3</version>
+		</dependency>
+
 	</dependencies>
 </project>
