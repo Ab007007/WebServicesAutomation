@@ -3,7 +3,10 @@ package com.synechron.restassured.training.response.jsonpath;
 import static io.restassured.RestAssured.given;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -52,4 +55,82 @@ public class JsonPathDemo {
 		}
 		System.out.println("---------------printAllUrls Ended ----------------");
 	}
+	
+	
+	@Test
+	public void printFirstBGImgeDetails()
+	{
+		System.out.println("---------------printFirstBGImgeDetails Started ----------------");
+		Map<String, ?> item = responseBody.get("prefs.backgroundImageScaled[0]");
+		Set<String> keys = item.keySet();
+		for (String key : keys) 
+		{
+			System.out.println(key +" : "+item.get(key));
+			
+		}
+		System.out.println("---------------printFirstBGImgeDetails Ended ----------------");
+	}
+	
+	@Test
+	public void printAllBGDetails()
+	{
+		System.out.println("---------------printAllBGDetails Started ----------------");
+		List<Map<String,?>> allElements =  responseBody.get("prefs.backgroundImageScaled");
+		
+		for (int i = 0; i < allElements.size(); i++) 
+		{
+			System.out.println(i + " index item values");
+			Map<String,?> item = allElements.get(i);
+			
+			Set<String> keys = item.keySet();
+			for (String key : keys)
+			{
+				System.out.println(key + " : " + item.get(key));
+			}
+			
+		}
+		
+		System.out.println("---------------printAllBGDetails Ended ----------------");
+		
+	}
+	
+	@Test
+	public void printMapGreaterThanWidth1000()
+	{
+		System.out.println("---------------printMapGreaterThanWidth1000 Started ----------------");
+		List<Map<String,?>> allElements = responseBody.get("prefs.backgroundImageScaled.findAll { it.width > 1000 }");
+		
+		for (int i = 0; i < allElements.size(); i++) 
+		{
+			System.out.println(i + " index item values");
+			Map<String,?> item = allElements.get(i);
+			
+			Set<String> keys = item.keySet();
+			for (String key : keys)
+			{
+				System.out.println(key + " : " + item.get(key));
+			}
+			
+		}
+		
+		System.out.println("---------------printMapGreaterThanWidth1000 Ended ----------------");
+		
+	}
+	
+	
+	@Test
+	public void printAllURLGreaterThan1000s()
+	{
+		System.out.println("---------------printAllURLGreaterThan1000s Started ----------------");
+		List<String> allElements =  responseBody.get("prefs.backgroundImageScaled.findAll { it.width > 1000 }.url");
+		
+		for (int i = 0; i < allElements.size(); i++) 
+		{
+				System.out.println(allElements.get(i));
+		}
+		
+		System.out.println("---------------printAllURLGreaterThan1000s Ended ----------------");
+		
+	}
+	
 }

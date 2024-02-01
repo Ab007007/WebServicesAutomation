@@ -95,5 +95,46 @@ public class JaywayDemo {
 		System.out.println("---------------printAllBGDetails Ended ----------------");
 		
 	}
+	
+	@Test
+	public void printMapGreaterThanWidth1000()
+	{
+		System.out.println("---------------printMapGreaterThanWidth1000 Started ----------------");
+		List<Map<String,?>> allElements =  JsonPath.
+				read(response.asString(), "$.prefs.backgroundImageScaled.[?(@.width>1000)]");
+		
+		for (int i = 0; i < allElements.size(); i++) 
+		{
+			System.out.println(i + " index item values");
+			Map<String,?> item = allElements.get(i);
+			
+			Set<String> keys = item.keySet();
+			for (String key : keys)
+			{
+				System.out.println(key + " : " + item.get(key));
+			}
+			
+		}
+		
+		System.out.println("---------------printMapGreaterThanWidth1000 Ended ----------------");
+		
+	}
+	
+	
+	@Test
+	public void printAllURLGreaterThan1000s()
+	{
+		System.out.println("---------------printAllURLGreaterThan1000s Started ----------------");
+		List<String> allElements =  JsonPath.
+				read(response.asString(), "$.prefs.backgroundImageScaled.[?(@.width>1000)].url");
+		
+		for (int i = 0; i < allElements.size(); i++) 
+		{
+				System.out.println(allElements.get(i));
+		}
+		
+		System.out.println("---------------printAllURLGreaterThan1000s Ended ----------------");
+		
+	}
 
 }
