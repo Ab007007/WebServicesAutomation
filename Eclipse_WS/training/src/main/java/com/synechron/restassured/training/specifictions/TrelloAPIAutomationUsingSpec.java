@@ -39,18 +39,18 @@ public class TrelloAPIAutomationUsingSpec {
 		RestAssured.baseURI = "https://api.trello.com";
 		
 		reqBuilder = new RequestSpecBuilder();
-		reqBuilder.addQueryParam("key", "c05a6bcdc360c246fde2e84d91420270");
-		reqBuilder.addQueryParam("token", "ATTA0805b7a6a0bf36f3e9769897b6d9c0256b309348a68c40d8f94bc3f65ca33f60AB4143A4");
-		//reqBuilder.addHeader("Content-type", "appliction/json");
+		reqBuilder.addQueryParam("key", GlobalVariables.key);
+		reqBuilder.addQueryParam("token", GlobalVariables.token);
+		reqBuilder.addHeader("Content-type", "application/json");
 		reqBuilder.log(LogDetail.ALL);
 		
 		reqSpec = reqBuilder.build();
 		
 		resBuilder = new ResponseSpecBuilder();
-	//	resBuilder.expectContentType("application/json; charset=utf-8");
 		resBuilder.expectStatusCode(200);
-		resBuilder.expectHeader("Server", "AtlassianEdge");
+//		resBuilder.expectHeader("Server", "AtlassianEdge");
 		resBuilder.log(LogDetail.ALL);
+		
 		resSpec = resBuilder.build();
 		
 		
@@ -66,13 +66,13 @@ public class TrelloAPIAutomationUsingSpec {
 	@Test(priority = 1)
 	public void createBoard() 
 	{
-		RestAssured.basePath = "/1/boards/";
+		//RestAssured.basePath = "/1/boards/";
 		
 		vResponse = given().
 				spec(reqSpec).
 				queryParam("name", "Eclipse-Created-Board").
 		when().
-			post().
+			post("/1/boards/").
 		then().spec(resSpec);
 
 		boardID = vResponse.extract().path("id");
@@ -80,17 +80,17 @@ public class TrelloAPIAutomationUsingSpec {
 
 	}
 	
-//	@Test(priority = 3)
+	@Test(priority = 3)
 	public void createList()
 	{
-		RestAssured.basePath = "/1/lists/";
+		//RestAssured.basePath = "/1/lists/";
 		
 		ValidatableResponse response = given().
 				spec(reqSpec).
 				queryParam("name", "Eclipse-Created-List").
 				queryParam("idBoard", boardID).
 			when().
-				post()
+				post("/1/lists/")
 			.then().spec(resSpec);
 
 		listID = response.extract().path("id");
@@ -98,10 +98,9 @@ public class TrelloAPIAutomationUsingSpec {
 				
 	}
 	
-//	@Test(priority = 4)
+	@Test(priority = 4)
 	public void createMultipleCard()
 	{
-		RestAssured.basePath = "/1/cards/";
 		for (int i = 0; i < 10; i++) {
 			String dateandtime = new Date().toString().replace(" ", "_").replace(":", "_");
 			
@@ -111,7 +110,7 @@ public class TrelloAPIAutomationUsingSpec {
 					queryParam("idList", listID).
 					header("Content-type", "appliction/json").
 				when().
-					post().
+					post("/1/cards/").
 				then().spec(resSpec);
 			
 		}
@@ -121,13 +120,12 @@ public class TrelloAPIAutomationUsingSpec {
 	@Test(priority = 2)
 	public void verifyBoardInGivenExpectFormat()
 	{
-		RestAssured.basePath = "1/boards/";
 		System.out.println("API Call Started...");
 		
 			given().
 				spec(reqSpec).
 			when().
-				get("65b9eedf65115121b64a0fd6").
+				get("1/boards/" + boardID).
 			then().
 				spec(resSpec);
 			;
