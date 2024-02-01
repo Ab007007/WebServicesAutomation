@@ -29,7 +29,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
-public class FiltersDemo {
+public class FiltersDemo2 {
 	
 	ValidatableResponse vResponse = null;
 	public String boardID = null;
@@ -47,12 +47,12 @@ public class FiltersDemo {
 	
 	public StringWriter requestWriter = null;
 	public StringWriter responseWriter = null;
+			
+	
 	
 	public void printLogsToFile() throws IOException {
 		String dateandtime = new Date().toString().replace(" ", "_").replace(":", "_");
 		
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-		System.out.println(reqPrinter.toString());
 		File f = new File("log/log_" + dateandtime + ".txt");
 		if(!f.exists())
 			f.createNewFile();
@@ -60,7 +60,7 @@ public class FiltersDemo {
 		FileWriter fw = new FileWriter(f);
 		fw.write(requestWriter.toString());
 		System.out.println("########################################");
-		fw.write("\n########################################");
+		fw.write("########################################");
 		fw.write(responseWriter.toString());
 		fw.flush();	
 	}
@@ -73,7 +73,6 @@ public class FiltersDemo {
 		
 		requestWriter = new StringWriter();
 		responseWriter = new StringWriter();
-		
 		reqPrinter = new PrintStream(new WriterOutputStream(requestWriter), true);
 		
 		resPrinter = new PrintStream(new WriterOutputStream(responseWriter), true);
@@ -83,9 +82,9 @@ public class FiltersDemo {
 		reqBuilder.addQueryParam("token", GlobalVariables.token);
 		reqBuilder.addHeader("Content-type", "application/json");
 		reqBuilder.log(LogDetail.ALL);
-		reqBuilder.addFilter(new RequestLoggingFilter(reqPrinter));
-		reqBuilder.addFilter(new ResponseLoggingFilter(resPrinter));
-		
+//		reqBuilder.addFilter(new RequestLoggingFilter(reqPrinter));
+//		reqBuilder.addFilter(new ResponseLoggingFilter(resPrinter));
+//		
 		reqSpec = reqBuilder.build();
 		
 		resBuilder = new ResponseSpecBuilder();
@@ -111,59 +110,6 @@ public class FiltersDemo {
 		
 	}
 	
-	@Test(priority = 1)
-	public void createBoard() throws IOException 
-	{
-		//RestAssured.basePath = "/1/boards/";
-		
-		vResponse = given().
-				spec(reqSpec).
-				queryParam("name", "Eclipse-Created-Board").
-		when().
-			post("/1/boards/").
-		then().spec(resSpec);
-
-		boardID = vResponse.extract().path("id");
-	
-
-	}
-	
-	@Test(priority = 3)
-	public void createList()
-	{
-		//RestAssured.basePath = "/1/lists/";
-		
-		ValidatableResponse response = given().
-				spec(reqSpec).
-				queryParam("name", "Eclipse-Created-List").
-				queryParam("idBoard", boardID).
-			when().
-				post("/1/lists/")
-			.then().spec(resSpec);
-
-		listID = response.extract().path("id");
-				
-				
-	}
-	
-	@Test(priority = 4)
-	public void createMultipleCard()
-	{
-		for (int i = 0; i < 10; i++) {
-			String dateandtime = new Date().toString().replace(" ", "_").replace(":", "_");
-			
-			ValidatableResponse response = given().
-					spec(reqSpec).
-					queryParam("name", "Eclipse-Created-Card-" + dateandtime).
-					queryParam("idList", listID).
-					header("Content-type", "appliction/json").
-				when().
-					post("/1/cards/").
-				then().spec(resSpec);
-			
-		}
-				//65b9f4f6bea53f6907d3d985
-	}
 	
 	@Test(priority = 2)
 	public void verifyBoardInGivenExpectFormat()
@@ -172,11 +118,14 @@ public class FiltersDemo {
 		
 			given().
 				spec(reqSpec).
+				filter(new RequestLoggingFilter(reqPrinter)).
+				filter(new ResponseLoggingFilter(resPrinter)).
 			when().
-				get("1/boards/" + boardID).
+				get("1/boards/65b9eedf65115121b64a0fd6").
 			then().
 				spec(resSpec);
-			;
+		System.out.println(requestWriter.toString());
+		System.out.println(responseWriter.toString());
 		System.out.println("API Call Ended...");
 	}
 	

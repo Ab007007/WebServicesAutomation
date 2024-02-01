@@ -1,4 +1,4 @@
-package com.synechron.restassured.training.response.jsonpath;
+package com.synechron.restassured.training.response.root;
 
 import static io.restassured.RestAssured.given;
 
@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.synechron.restassured.training.globals.GlobalVariables;
@@ -20,37 +19,31 @@ public class JsonPathDemo {
 
 	Response response = null;
 	JsonPath responseBody = null;
-	@BeforeTest
+	@BeforeMethod
 	public void verifyBoardInBDDFormat() {
 		System.out.println("API Call Started...");
 
 		RestAssured.baseURI = "https://api.trello.com";
 //		RestAssured.port = "8888";
-		RestAssured.basePath = "1/boards/65b8926befbc0ef1ab5da901";
-
+		RestAssured.basePath = "1/boards/65b9eedf65115121b64a0fd6";
+		RestAssured.rootPath = "prefs";
 		response = given().param("key", GlobalVariables.key).param("token", GlobalVariables.token).when().get();
 		responseBody = new JsonPath(response.asString());
 		
 		System.out.println("API Call Ended...");
 	}
 	
-	@Test
-	public void printID()
-	{
-		JsonPath responseBody = new JsonPath(response.asString());
-		String id = responseBody.get("id");		
-		System.out.println("Printing ID : " + id);
-	}
+	
 	
 
 	@Test
 	public void printAllUrls() {
 		System.out.println("---------------printAllUrls Started ----------------");
-		int totalUrls = responseBody.get("prefs.backgroundImageScaled.size()");
+		int totalUrls = responseBody.get("backgroundImageScaled.size()");
 		System.out.println(totalUrls);
 		for (int i = 0; i < totalUrls; i++) 
 		{
-			String url = responseBody.get("prefs.backgroundImageScaled["+i+"].url");
+			String url = responseBody.get("backgroundImageScaled["+i+"].url");
 			System.out.println(url);
 		}
 		System.out.println("---------------printAllUrls Ended ----------------");
@@ -61,7 +54,7 @@ public class JsonPathDemo {
 	public void printFirstBGImgeDetails()
 	{
 		System.out.println("---------------printFirstBGImgeDetails Started ----------------");
-		Map<String, ?> item = responseBody.get("prefs.backgroundImageScaled[0]");
+		Map<String, ?> item = responseBody.get("backgroundImageScaled[0]");
 		Set<String> keys = item.keySet();
 		for (String key : keys) 
 		{
@@ -75,7 +68,7 @@ public class JsonPathDemo {
 	public void printAllBGDetails()
 	{
 		System.out.println("---------------printAllBGDetails Started ----------------");
-		List<Map<String,?>> allElements =  responseBody.get("prefs.backgroundImageScaled");
+		List<Map<String,?>> allElements =  responseBody.get("backgroundImageScaled");
 		
 		for (int i = 0; i < allElements.size(); i++) 
 		{
@@ -98,7 +91,7 @@ public class JsonPathDemo {
 	public void printMapGreaterThanWidth1000()
 	{
 		System.out.println("---------------printMapGreaterThanWidth1000 Started ----------------");
-		List<Map<String,?>> allElements = responseBody.get("prefs.backgroundImageScaled.findAll { it.width > 1000 }");
+		List<Map<String,?>> allElements = responseBody.get("backgroundImageScaled.findAll { it.width > 1000 }");
 		
 		for (int i = 0; i < allElements.size(); i++) 
 		{
@@ -122,7 +115,7 @@ public class JsonPathDemo {
 	public void printAllURLGreaterThan1000s()
 	{
 		System.out.println("---------------printAllURLGreaterThan1000s Started ----------------");
-		List<String> allElements =  responseBody.get("prefs.backgroundImageScaled.findAll { it.width > 1000 }.url");
+		List<String> allElements =  responseBody.get("backgroundImageScaled.findAll { it.width > 1000 }.url");
 		
 		for (int i = 0; i < allElements.size(); i++) 
 		{
